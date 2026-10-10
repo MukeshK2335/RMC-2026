@@ -258,24 +258,25 @@ if (preEventCarousel && preEventCards.length > 1 && !reducedMotion.matches) {
 const testimonialCarousel = document.querySelector(".testimonial-carousel");
 const testimonialTrack = document.querySelector(".testimonial-carousel-track");
 const testimonialSlides = [...document.querySelectorAll(".testimonial-card")];
-const testimonialSlideCount = document.querySelector(".testimonial-slide-count");
 let activeTestimonial = 0;
 
 function showTestimonial(index) {
   if (!testimonialSlides.length) return;
-  activeTestimonial = (index + testimonialSlides.length) % testimonialSlides.length;
-  testimonialTrack.style.transform = `translateX(-${activeTestimonial * 100}%)`;
+  const visibleCount = Math.min(2, testimonialSlides.length);
+  const pageCount = Math.ceil(testimonialSlides.length / visibleCount);
+  const page = ((Math.floor(index / visibleCount) % pageCount) + pageCount) % pageCount;
+  activeTestimonial = page * visibleCount;
+  testimonialTrack.style.transform = `translateX(-${testimonialSlides[activeTestimonial].offsetLeft - testimonialSlides[0].offsetLeft}px)`;
   testimonialSlides.forEach((slide, slideIndex) => {
-    const isActive = slideIndex === activeTestimonial;
+    const isActive = slideIndex >= activeTestimonial && slideIndex < activeTestimonial + visibleCount;
     slide.setAttribute("aria-hidden", String(!isActive));
     slide.inert = !isActive;
   });
-  testimonialSlideCount.textContent = `${String(activeTestimonial + 1).padStart(2, "0")} / ${String(testimonialSlides.length).padStart(2, "0")}`;
 }
 
 document.querySelectorAll("[data-testimonial-direction]").forEach((button) => {
   button.addEventListener("click", () => {
-    showTestimonial(activeTestimonial + Number(button.dataset.testimonialDirection));
+    showTestimonial(activeTestimonial + Number(button.dataset.testimonialDirection) * 2);
   });
 });
 
@@ -284,7 +285,7 @@ showTestimonial(activeTestimonial);
 if (testimonialCarousel && testimonialSlides.length > 1 && !reducedMotion.matches) {
   window.setInterval(() => {
     if (!testimonialCarousel.matches(":hover, :focus-within") && !document.hidden) {
-      showTestimonial(activeTestimonial + 1);
+      showTestimonial(activeTestimonial + 2);
     }
   }, 6_000);
 }
