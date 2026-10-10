@@ -62,6 +62,7 @@ document.querySelectorAll("[data-update-direction]").forEach((button) => {
 const announcementTrack = document.querySelector(".announcement-carousel-track");
 const announcementSlides = [...document.querySelectorAll(".announcement-card")];
 const announcementSlideCount = document.querySelector(".announcement-slide-count");
+const announcementCarousel = document.querySelector(".announcement-carousel");
 let activeAnnouncement = 0;
 
 function showAnnouncement(index) {
@@ -82,6 +83,15 @@ document.querySelectorAll("[data-announcement-direction]").forEach((button) => {
 });
 
 showAnnouncement(activeAnnouncement);
+
+if (announcementCarousel && announcementSlides.length > 1 && !reducedMotion.matches) {
+  window.setInterval(() => {
+    const isPaused = announcementCarousel.matches(":hover, :focus-within");
+    if (!isPaused && !document.hidden) {
+      showAnnouncement(activeAnnouncement + 1);
+    }
+  }, 5_000);
+}
 
 function updateCountdown() {
   const remaining = Math.max(0, eventStart - Date.now());
