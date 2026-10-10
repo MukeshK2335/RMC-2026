@@ -18,6 +18,22 @@ if (heroSlides.length > 1 && !reducedMotion.matches) {
   }, 6_000);
 }
 
+const latestUpdates = [
+  "Session on Building Business",
+  "Returning Mothers’ Day · Ideathon & Pitchfest · Awards",
+  "13–14 November 2026 · NMIT, Bengaluru",
+];
+const latestUpdateMessage = document.querySelector(".latest-update-message");
+let activeUpdate = 0;
+
+document.querySelectorAll("[data-update-direction]").forEach((button) => {
+  button.addEventListener("click", () => {
+    const direction = Number(button.dataset.updateDirection);
+    activeUpdate = (activeUpdate + direction + latestUpdates.length) % latestUpdates.length;
+    latestUpdateMessage.textContent = latestUpdates[activeUpdate];
+  });
+});
+
 function updateCountdown() {
   const remaining = Math.max(0, eventStart - Date.now());
   const days = Math.floor(remaining / 86_400_000);
