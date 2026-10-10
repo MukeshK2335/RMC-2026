@@ -290,6 +290,17 @@ if (testimonialCarousel && testimonialSlides.length > 1 && !reducedMotion.matche
   }, 6_000);
 }
 
+const contactForm = document.querySelector(".contact-form");
+const contactFormStatus = document.querySelector(".contact-form-status");
+const contactFormSubmit = document.querySelector(".contact-form-submit");
+
+if (contactForm && contactFormStatus && contactFormSubmit) {
+  contactFormSubmit.addEventListener("click", () => {
+    if (!contactForm.reportValidity()) return;
+    contactFormStatus.textContent = "Preview only: your message was not sent because this form is not connected yet.";
+  });
+}
+
 function updateCountdown() {
   const remaining = Math.max(0, eventStart - Date.now());
   const days = Math.floor(remaining / 86_400_000);

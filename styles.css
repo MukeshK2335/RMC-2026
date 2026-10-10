@@ -181,6 +181,45 @@ button { font: inherit; }
 .testimonial-person > div { display: flex; flex-direction: column; gap: 2px; }
 .testimonial-person strong { color: #fff; font-size: 14px; }
 .testimonial-person > div > span { color: #d9e9e4; font-size: 12px; }
+.sponsors-section { overflow: hidden; background: #fff; }
+.sponsors-heading { max-width: 1080px; margin: 0 auto 36px; text-align: center; }
+.sponsors-heading h2 { margin: 8px 0 0; color: #164d59; font-size: clamp(38px, 4.6vw, 58px); }
+.sponsors-heading h2 em { color: #a4c83d; }
+.sponsor-marquee { position: relative; max-width: 1280px; margin: 0 auto; overflow: hidden; }
+.sponsor-marquee::before, .sponsor-marquee::after { position: absolute; z-index: 1; top: 0; bottom: 0; width: clamp(24px, 7vw, 90px); content: ""; pointer-events: none; }
+.sponsor-marquee::before { left: 0; background: linear-gradient(90deg, #fff, transparent); }
+.sponsor-marquee::after { right: 0; background: linear-gradient(270deg, #fff, transparent); }
+.sponsor-marquee-track { display: flex; width: max-content; animation: sponsor-marquee-scroll 35s linear infinite; }
+.sponsor-logo-set { display: flex; flex: none; align-items: center; gap: 24px; margin: 0; padding: 8px 12px; list-style: none; }
+.sponsor-logo-card { display: grid; width: clamp(170px, 18vw, 220px); height: 126px; flex: 0 0 auto; place-items: center; padding: 20px; border: 1px solid #e8eeeb; border-radius: 14px; background: #fff; box-shadow: 0 8px 24px rgba(22, 77, 89, .07); }
+.sponsor-logo-card img { width: 100%; height: 100%; object-fit: contain; }
+.sponsor-marquee:hover .sponsor-marquee-track, .sponsor-marquee:focus-within .sponsor-marquee-track { animation-play-state: paused; }
+.sponsors-button { display: flex; width: fit-content; min-height: 54px; margin: 32px auto 0; padding: 14px 28px; font-size: 17px; }
+.contact-form-section { position: relative; isolation: isolate; padding: 76px 24px 90px; overflow: hidden; background: #08777a; }
+.contact-form-section::before { position: absolute; z-index: 0; inset: 0; background: linear-gradient(112deg, rgba(5, 75, 84, .91), rgba(13, 153, 116, .88)), url("Home%20Page%20Images/Hero%20Originals/IMG_0300.jpg") center 44% / cover no-repeat; content: ""; }
+.contact-form-content { position: relative; z-index: 1; width: min(960px, 100%); margin: 0 auto; }
+.contact-form-heading { margin: 0 0 38px; color: #fff; text-align: center; }
+.contact-form-heading .eyebrow { justify-content: center; }
+.contact-form-heading h2 { margin: 23px 0 0; color: #fff; font-size: clamp(40px, 4.8vw, 58px); text-transform: uppercase; }
+.contact-form-heading h2 em { color: #d5e989; }
+.contact-form { padding: clamp(28px, 4vw, 48px); border-radius: 12px; background: #fff; box-shadow: 0 22px 70px rgba(4, 46, 48, .24); }
+.contact-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 23px 24px; }
+.contact-form-field { display: grid; gap: 8px; }
+.contact-form-field-full { grid-column: 1 / -1; }
+.contact-form-field label { color: #343c3b; font-size: 15px; font-weight: 600; }
+.contact-form-field label span { color: #b13f32; }
+.contact-form-field input, .contact-form-field select, .contact-form-field textarea { width: 100%; min-height: 54px; padding: 12px 15px; border: 1px solid #d7ddda; border-radius: 5px; outline: none; color: #293735; background: #fff; font: inherit; font-size: 16px; transition: border-color .2s ease, box-shadow .2s ease; }
+.contact-form-field textarea { min-height: 150px; resize: vertical; }
+.contact-form-field select:invalid { color: #707977; }
+.contact-form-field input:focus, .contact-form-field select:focus, .contact-form-field textarea:focus { border-color: #168b7e; box-shadow: 0 0 0 3px rgba(22, 139, 126, .15); }
+.contact-form-submit { width: 100%; min-height: 54px; margin-top: 28px; border: 0; border-radius: 5px; color: #fff; background: #168b7e; font: inherit; font-size: 16px; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: background .2s ease, transform .2s ease; }
+.contact-form-submit:hover { transform: translateY(-2px); background: #0c7168; }
+.contact-form-submit:focus-visible { outline: 3px solid #e5b23f; outline-offset: 3px; }
+.contact-form-note, .contact-form-status { margin: 14px 0 0; color: #5b6865; font-size: 12px; text-align: center; }
+.contact-form-status:empty { display: none; }
+@keyframes sponsor-marquee-scroll {
+  to { transform: translateX(-50%); }
+}
 .rmc-question { min-height: 245px; background: #f1f4f7; }
 .rmc-question-alt { background: #fff; }
 .rmc-question h2 { color: var(--teal); font-size: clamp(40px, 5vw, 64px); }
@@ -429,6 +468,16 @@ h2 em { color: var(--teal); font-style: normal; }
   .testimonial-avatar { width: 38px; height: 38px; font-size: 11px; }
   .testimonial-person strong { font-size: 12px; }
   .testimonial-person > div > span { font-size: 10px; }
+  .contact-form-section { padding: 58px 18px 64px; }
+  .contact-form-heading { margin-bottom: 25px; }
+  .contact-form-heading h2 { margin-top: 16px; }
+  .contact-form { padding: 23px 18px; border-radius: 10px; }
+  .contact-form-grid { grid-template-columns: 1fr; gap: 17px; }
+  .contact-form-field-full { grid-column: auto; }
+  .contact-form-field label { font-size: 14px; }
+  .contact-form-field input, .contact-form-field select, .contact-form-field textarea { min-height: 49px; font-size: 15px; }
+  .contact-form-field textarea { min-height: 130px; }
+  .contact-form-submit { min-height: 50px; margin-top: 22px; }
   .rmc-question { min-height: 190px; }
   .rmc-question h2 { font-size: 38px; }
   .rmc-question-description { margin-top: 16px; font-size: 14px; line-height: 1.75; }
@@ -513,4 +562,8 @@ h2 em { color: var(--teal); font-style: normal; }
   .hero-slide { transition: none; }
   .about-rmc-award svg { animation: none; }
   .about-rmc-photo:hover { transform: none; }
+  .sponsor-marquee-track { width: 100%; animation: none; }
+  .sponsor-logo-set { width: 100%; flex-wrap: wrap; justify-content: center; gap: 12px; padding-inline: 0; }
+  .sponsor-logo-set[aria-hidden="true"] { display: none; }
+  .sponsor-logo-card { width: min(220px, calc((100% - 12px) / 2)); }
 }
