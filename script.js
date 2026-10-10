@@ -59,6 +59,30 @@ document.querySelectorAll("[data-update-direction]").forEach((button) => {
   });
 });
 
+const announcementTrack = document.querySelector(".announcement-carousel-track");
+const announcementSlides = [...document.querySelectorAll(".announcement-card")];
+const announcementSlideCount = document.querySelector(".announcement-slide-count");
+let activeAnnouncement = 0;
+
+function showAnnouncement(index) {
+  activeAnnouncement = (index + announcementSlides.length) % announcementSlides.length;
+  announcementTrack.style.transform = `translateX(-${activeAnnouncement * 100}%)`;
+  announcementSlides.forEach((slide, slideIndex) => {
+    const isActive = slideIndex === activeAnnouncement;
+    slide.setAttribute("aria-hidden", String(!isActive));
+    slide.inert = !isActive;
+  });
+  announcementSlideCount.textContent = `${String(activeAnnouncement + 1).padStart(2, "0")} / ${String(announcementSlides.length).padStart(2, "0")}`;
+}
+
+document.querySelectorAll("[data-announcement-direction]").forEach((button) => {
+  button.addEventListener("click", () => {
+    showAnnouncement(activeAnnouncement + Number(button.dataset.announcementDirection));
+  });
+});
+
+showAnnouncement(activeAnnouncement);
+
 function updateCountdown() {
   const remaining = Math.max(0, eventStart - Date.now());
   const days = Math.floor(remaining / 86_400_000);
