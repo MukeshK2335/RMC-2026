@@ -33,6 +33,102 @@ if (aboutSection && !reducedMotion.matches) {
   revealAboutSection();
 }
 
+const animatedSections = [...document.querySelectorAll("main > section:not(.hero):not(.about-rmc)")];
+
+if (!reducedMotion.matches && animatedSections.length) {
+  const pendingSections = new Set(animatedSections);
+  let sectionObserver;
+
+  const revealSection = (section) => {
+    section.classList.add("is-visible");
+    pendingSections.delete(section);
+    if (pendingSections.size === 0) {
+      if (sectionObserver) sectionObserver.disconnect();
+      window.removeEventListener("scroll", revealSectionsInView);
+      window.removeEventListener("resize", revealSectionsInView);
+    }
+  };
+
+  const revealSectionsInView = () => {
+    pendingSections.forEach((section) => {
+      const bounds = section.getBoundingClientRect();
+      if (bounds.top < window.innerHeight * 0.9 && bounds.bottom > window.innerHeight * 0.1) {
+        revealSection(section);
+      }
+    });
+  };
+
+  animatedSections.forEach((section) => {
+    section.classList.add("section-reveal");
+  });
+  if ("IntersectionObserver" in window) {
+    sectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) revealSection(entry.target);
+      });
+    }, { threshold: 0.05 });
+    animatedSections.forEach((section) => sectionObserver.observe(section));
+  }
+  window.addEventListener("scroll", revealSectionsInView, { passive: true });
+  window.addEventListener("resize", revealSectionsInView);
+  revealSectionsInView();
+}
+
+const metricsSection = document.querySelector(".metrics-section");
+const metricItems = [...document.querySelectorAll(".metric-item")];
+
+if (metricsSection && metricItems.length && !reducedMotion.matches) {
+  let metricsStarted = false;
+  let metricsObserver;
+
+  const startMetrics = () => {
+    if (metricsStarted) return;
+    metricsStarted = true;
+    if (metricsObserver) metricsObserver.disconnect();
+    window.removeEventListener("scroll", checkMetricsVisibility);
+    window.removeEventListener("resize", checkMetricsVisibility);
+
+    metricItems.forEach((item) => {
+      const value = item.querySelector(".metric-value");
+      const target = Number(value.dataset.metricValue);
+      const suffix = value.dataset.metricSuffix || "";
+      const duration = 1200;
+      item.classList.add("is-counting");
+
+      const updateValue = (timestamp, startTime) => {
+        const progress = Math.min((timestamp - startTime) / duration, 1);
+        const easedProgress = 1 - (1 - progress) ** 3;
+        value.textContent = `${Math.round(target * easedProgress)}${suffix}`;
+
+        if (progress < 1) {
+          requestAnimationFrame((nextTimestamp) => updateValue(nextTimestamp, startTime));
+        } else {
+          value.textContent = `${target}${suffix}`;
+        }
+      };
+
+      requestAnimationFrame((timestamp) => updateValue(timestamp, timestamp));
+    });
+  };
+
+  const checkMetricsVisibility = () => {
+    const bounds = metricsSection.getBoundingClientRect();
+    if (bounds.top < window.innerHeight * 0.9 && bounds.bottom > window.innerHeight * 0.1) {
+      startMetrics();
+    }
+  };
+
+  if ("IntersectionObserver" in window) {
+    metricsObserver = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) startMetrics();
+    }, { threshold: 0.2 });
+    metricsObserver.observe(metricsSection);
+  }
+  window.addEventListener("scroll", checkMetricsVisibility, { passive: true });
+  window.addEventListener("resize", checkMetricsVisibility);
+  checkMetricsVisibility();
+}
+
 if (heroSlides.length > 1 && !reducedMotion.matches) {
   let activeSlide = 0;
 
@@ -63,6 +159,10 @@ const announcementTrack = document.querySelector(".announcement-carousel-track")
 const announcementSlides = [...document.querySelectorAll(".announcement-card")];
 const announcementSlideCount = document.querySelector(".announcement-slide-count");
 const announcementCarousel = document.querySelector(".announcement-carousel");
+const announcementDialog = document.querySelector(".announcement-dialog");
+const announcementDialogImage = announcementDialog.querySelector(".announcement-dialog-image");
+const announcementDialogTitle = announcementDialog.querySelector("#announcement-dialog-title");
+const announcementDialogDescription = announcementDialog.querySelector(".announcement-dialog-description");
 let activeAnnouncement = 0;
 
 function showAnnouncement(index) {
@@ -82,15 +182,111 @@ document.querySelectorAll("[data-announcement-direction]").forEach((button) => {
   });
 });
 
+document.querySelectorAll("[data-announcement-open]").forEach((button) => {
+  button.addEventListener("click", () => {
+    const slide = button.closest(".announcement-card");
+    const image = slide.querySelector("img");
+    announcementDialogImage.src = image.src;
+    announcementDialogImage.alt = image.alt;
+    announcementDialogTitle.textContent = slide.querySelector("h3").textContent;
+    announcementDialogDescription.textContent = slide.querySelector(".announcement-card-copy > p:not(.eyebrow)").textContent;
+    announcementDialog.showModal();
+  });
+});
+
+announcementDialog.querySelector(".announcement-dialog-close").addEventListener("click", () => {
+  announcementDialog.close();
+});
+announcementDialog.addEventListener("click", (event) => {
+  if (event.target === announcementDialog) announcementDialog.close();
+});
+
 showAnnouncement(activeAnnouncement);
 
 if (announcementCarousel && announcementSlides.length > 1 && !reducedMotion.matches) {
   window.setInterval(() => {
     const isPaused = announcementCarousel.matches(":hover, :focus-within");
-    if (!isPaused && !document.hidden) {
+    if (!isPaused && !announcementDialog.open && !document.hidden) {
       showAnnouncement(activeAnnouncement + 1);
     }
   }, 5_000);
+}
+
+const preEventCarousel = document.querySelector(".pre-event-carousel");
+const preEventTrack = document.querySelector(".pre-event-carousel-track");
+const preEventCards = [...document.querySelectorAll(".pre-event-card")];
+const preEventSlideCount = document.querySelector(".pre-event-slide-count");
+let activePreEvent = 0;
+
+function getVisiblePreEventCount() {
+  if (preEventCards.length < 2) return preEventCards.length;
+  const step = preEventCards[1].offsetLeft - preEventCards[0].offsetLeft;
+  return step > 0 ? Math.max(1, Math.round(preEventCarousel.clientWidth / step)) : 1;
+}
+
+function showPreEvent(index) {
+  if (!preEventCards.length) return;
+  const maxIndex = Math.max(0, preEventCards.length - getVisiblePreEventCount());
+  activePreEvent = (index + maxIndex + 1) % (maxIndex + 1);
+  preEventTrack.style.transform = `translateX(-${preEventCards[activePreEvent].offsetLeft - preEventCards[0].offsetLeft}px)`;
+  const visibleCount = getVisiblePreEventCount();
+  preEventCards.forEach((card, cardIndex) => {
+    const isVisible = cardIndex >= activePreEvent && cardIndex < activePreEvent + visibleCount;
+    card.setAttribute("aria-hidden", String(!isVisible));
+    card.inert = !isVisible;
+  });
+  preEventSlideCount.textContent = `${String(activePreEvent + 1).padStart(2, "0")} / ${String(preEventCards.length).padStart(2, "0")}`;
+}
+
+document.querySelectorAll("[data-pre-event-direction]").forEach((button) => {
+  button.addEventListener("click", () => {
+    showPreEvent(activePreEvent + Number(button.dataset.preEventDirection));
+  });
+});
+
+showPreEvent(activePreEvent);
+window.addEventListener("resize", () => showPreEvent(activePreEvent));
+
+if (preEventCarousel && preEventCards.length > 1 && !reducedMotion.matches) {
+  window.setInterval(() => {
+    if (!preEventCarousel.matches(":hover, :focus-within") && !document.hidden) {
+      showPreEvent(activePreEvent + 1);
+    }
+  }, 5_000);
+}
+
+const testimonialCarousel = document.querySelector(".testimonial-carousel");
+const testimonialTrack = document.querySelector(".testimonial-carousel-track");
+const testimonialSlides = [...document.querySelectorAll(".testimonial-card")];
+const testimonialSlideCount = document.querySelector(".testimonial-slide-count");
+let activeTestimonial = 0;
+
+function showTestimonial(index) {
+  if (!testimonialSlides.length) return;
+  activeTestimonial = (index + testimonialSlides.length) % testimonialSlides.length;
+  testimonialTrack.style.transform = `translateX(-${activeTestimonial * 100}%)`;
+  testimonialSlides.forEach((slide, slideIndex) => {
+    const isActive = slideIndex === activeTestimonial;
+    slide.setAttribute("aria-hidden", String(!isActive));
+    slide.inert = !isActive;
+  });
+  testimonialSlideCount.textContent = `${String(activeTestimonial + 1).padStart(2, "0")} / ${String(testimonialSlides.length).padStart(2, "0")}`;
+}
+
+document.querySelectorAll("[data-testimonial-direction]").forEach((button) => {
+  button.addEventListener("click", () => {
+    showTestimonial(activeTestimonial + Number(button.dataset.testimonialDirection));
+  });
+});
+
+showTestimonial(activeTestimonial);
+
+if (testimonialCarousel && testimonialSlides.length > 1 && !reducedMotion.matches) {
+  window.setInterval(() => {
+    if (!testimonialCarousel.matches(":hover, :focus-within") && !document.hidden) {
+      showTestimonial(activeTestimonial + 1);
+    }
+  }, 6_000);
 }
 
 function updateCountdown() {
