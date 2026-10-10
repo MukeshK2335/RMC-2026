@@ -7,6 +7,31 @@ const countdownNodes = {
 const eventStart = new Date("2026-11-13T09:00:00+05:30").getTime();
 const heroSlides = [...document.querySelectorAll(".hero-slide")];
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+const aboutSection = document.querySelector(".about-rmc");
+
+if (aboutSection && !reducedMotion.matches) {
+  let aboutObserver;
+  const revealAboutSection = () => {
+    const bounds = aboutSection.getBoundingClientRect();
+    const isInView = bounds.top < window.innerHeight * 0.85 && bounds.bottom > window.innerHeight * 0.15;
+
+    if (isInView) {
+      aboutSection.classList.add("is-visible");
+      if (aboutObserver) aboutObserver.disconnect();
+      window.removeEventListener("scroll", revealAboutSection);
+      window.removeEventListener("resize", revealAboutSection);
+    }
+  };
+
+  aboutSection.classList.add("has-motion");
+  if ("IntersectionObserver" in window) {
+    aboutObserver = new IntersectionObserver(revealAboutSection, { threshold: 0.15 });
+    aboutObserver.observe(aboutSection);
+  }
+  window.addEventListener("scroll", revealAboutSection, { passive: true });
+  window.addEventListener("resize", revealAboutSection);
+  revealAboutSection();
+}
 
 if (heroSlides.length > 1 && !reducedMotion.matches) {
   let activeSlide = 0;

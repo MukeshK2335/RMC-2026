@@ -83,10 +83,23 @@ button { font: inherit; }
 .about-rmc-link { min-width: 190px; margin-top: 28px; font-size: 16px; }
 .about-rmc-gallery { display: grid; min-height: 590px; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; align-items: center; gap: 24px; }
 .about-rmc-photo { width: 100%; height: 215px; border-radius: 13px; object-fit: cover; box-shadow: 0 8px 22px rgba(31, 53, 59, .12); }
+.about-rmc-photo { transition: transform .3s ease, box-shadow .3s ease; }
+.about-rmc-photo:hover { z-index: 1; transform: translateY(-5px) scale(1.025); box-shadow: 0 15px 28px rgba(31, 53, 59, .2); }
 .about-rmc-photo-one { align-self: start; }
 .about-rmc-photo-two { align-self: center; margin-top: 65px; }
 .about-rmc-photo-three { align-self: center; margin-bottom: 36px; }
 .about-rmc-photo-four { align-self: end; }
+.about-rmc.has-motion .about-rmc-copy > *,
+.about-rmc.has-motion .about-rmc-photo { opacity: 0; transform: translateY(22px); transition: opacity .7s ease, transform .7s ease; }
+.about-rmc.has-motion .about-rmc-copy > *:nth-child(2) { transition-delay: .08s; }
+.about-rmc.has-motion .about-rmc-copy > *:nth-child(3) { transition-delay: .16s; }
+.about-rmc.has-motion .about-rmc-copy > *:nth-child(4) { transition-delay: .24s; }
+.about-rmc.has-motion .about-rmc-copy > *:nth-child(5) { transition-delay: .32s; }
+.about-rmc.has-motion .about-rmc-photo-two { transition-delay: .12s; }
+.about-rmc.has-motion .about-rmc-photo-three { transition-delay: .24s; }
+.about-rmc.has-motion .about-rmc-photo-four { transition-delay: .36s; }
+.about-rmc.has-motion.is-visible .about-rmc-copy > *,
+.about-rmc.has-motion.is-visible .about-rmc-photo { opacity: 1; transform: translateY(0); }
 .section-pad { padding: 108px max(8vw, 24px); }
 .intro-section { display: grid; grid-template-columns: 1fr .86fr; align-items: center; gap: clamp(42px, 8vw, 115px); }
 .intro-photo { position: relative; min-height: 470px; }
@@ -318,4 +331,5 @@ h2 em { color: var(--teal); font-style: normal; }
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
   .hero-slide { transition: none; }
   .about-rmc-award svg { animation: none; }
+  .about-rmc-photo:hover { transform: none; }
 }
