@@ -68,7 +68,7 @@ button { font: inherit; }
 .latest-updates-label { display: flex; flex: 0 0 220px; align-items: center; justify-content: center; margin: 0; padding: 12px 20px; color: white; background: #104b62; font-family: var(--font-display); font-size: 19px; font-weight: 800; letter-spacing: -.03em; }
 .latest-update-message { display: flex; flex: 1 1 auto; min-width: 0; align-items: center; justify-content: center; margin: 0; padding: 12px 24px; overflow: hidden; color: #344448; background: white; font-size: 18px; font-weight: 600; text-align: center; text-overflow: ellipsis; white-space: nowrap; }
 .latest-update-controls { display: flex; flex: 0 0 auto; align-items: stretch; gap: 2px; padding: 0 8px; background: white; }
-.latest-update-button { display: grid; width: 38px; place-items: center; border: 0; border-left: 1px solid #edf0ef; color: #104b62; background: white; font-size: 32px; line-height: 1; cursor: pointer; transition: color .2s ease, background .2s ease; }
+.latest-update-button { display: grid; width: 44px; place-items: center; border: 0; border-left: 1px solid #edf0ef; color: #104b62; background: white; font-size: 32px; line-height: 1; cursor: pointer; transition: color .2s ease, background .2s ease; }
 .latest-update-button:hover { color: var(--teal); background: #eff8f5; }
 .latest-update-button:focus-visible { outline: 2px solid var(--gold); outline-offset: -3px; }
 .about-rmc { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: center; gap: clamp(42px, 7vw, 100px); overflow: hidden; background: #f1f4f7; }
@@ -435,7 +435,7 @@ h2 em { color: var(--teal); font-style: normal; }
   .latest-updates-label { flex-basis: 112px; padding: 8px; font-size: 13px; }
   .latest-update-message { justify-content: flex-start; padding: 8px 10px; font-size: 12px; text-align: left; }
   .latest-update-controls { gap: 0; padding: 0 2px; }
-  .latest-update-button { width: 25px; font-size: 25px; }
+  .latest-update-button { width: 44px; min-height: 44px; font-size: 25px; }
   .about-rmc { gap: 28px; }
   .about-rmc-copy h2 { font-size: 40px; }
   .about-rmc-description { font-size: 14px; }
@@ -453,6 +453,7 @@ h2 em { color: var(--teal); font-style: normal; }
   .about-rmday-photo { height: 250px; border-radius: 10px; }
   .metrics-section { padding: 42px 16px; }
   .metrics-section::after { top: -115px; width: 350px; height: 350px; box-shadow: 0 0 0 24px rgba(255, 255, 255, .035), 0 0 0 54px rgba(255, 255, 255, .025); }
+  .metrics-grid { grid-template-columns: 1fr; }
   .metric-item { min-height: 104px; }
   .metric-value { font-size: clamp(34px, 9vw, 46px); }
   .metric-item > span { font-size: 12px; }
@@ -490,14 +491,15 @@ h2 em { color: var(--teal); font-style: normal; }
   .announcements-heading { align-items: flex-start; flex-direction: column; gap: 18px; margin-bottom: 22px; }
   .announcements-heading h2 { font-size: 40px; }
   .announcement-carousel-controls { align-self: flex-end; }
-  .announcement-carousel-button { width: 39px; height: 39px; }
+  .announcement-carousel-button { width: 44px; height: 44px; }
   .announcement-card { height: auto; min-height: 0; grid-template-columns: 1fr; }
   .announcement-card > img { height: 130px; min-height: 130px; }
   .announcement-card-copy { padding: 16px 16px 18px; }
   .announcement-card-copy .eyebrow { margin-bottom: 8px; }
   .announcement-card-copy h3 { font-size: 25px; }
   .announcement-card-copy > p:not(.eyebrow) { margin: 8px 0 14px; font-size: 12px; line-height: 1.55; }
-  .announcement-card-copy .button { min-height: 40px; font-size: 12px; }
+  .announcement-card-copy .button { min-height: 44px; font-size: 12px; }
+  .announcements-heading h2 { font-size: clamp(32px, 10vw, 40px); }
   .announcement-dialog { width: min(480px, calc(100% - 28px)); max-height: calc(100vh - 28px); border-radius: 16px; }
   .announcement-dialog-content { grid-template-columns: 1fr; }
   .announcement-dialog-image { height: 190px; min-height: 190px; }
@@ -553,6 +555,27 @@ h2 em { color: var(--teal); font-style: normal; }
   .contact-spark { top: auto; right: -30px; bottom: 75px; font-size: 125px; }
   .footer-bottom { flex-wrap: wrap; }
   .footer-bottom span:last-child { width: 100%; }
+}
+
+@media (max-width: 360px) {
+  main > .section-pad { padding-right: 16px; padding-left: 16px; }
+  main > .hero { min-height: 660px; }
+  main > .hero .hero-content { padding-right: 18px; padding-left: 18px; }
+  main > .hero h1 { font-size: 44px; }
+  main > .hero .hero-theme { font-size: 15px; }
+  main > .announcements-section .announcements-heading h2 { font-size: 32px; }
+  .latest-updates { display: grid; grid-template-columns: minmax(0, 1fr) auto; }
+  .latest-updates-label { grid-column: 1 / -1; min-height: 36px; }
+  .latest-update-message { min-height: 48px; white-space: normal; text-overflow: clip; }
+  .latest-update-controls { align-items: center; }
+  .latest-update-button { width: 44px; min-height: 44px; }
+  .countdown-item strong { font-size: 30px; }
+  .countdown-item span { font-size: 10px; }
+  .metrics-section .metric-value { font-size: 30px; }
+  .metric-item > span { font-size: 10px; }
+  .testimonial-card { min-height: 280px; padding: 20px 13px 18px; }
+  .testimonial-card blockquote { font-size: 14px; }
+  .testimonial-person { align-items: flex-start; }
 }
 
 @media (prefers-reduced-motion: reduce) {
